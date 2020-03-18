@@ -385,7 +385,6 @@ HRESULT CDxva2Renderer::InitVideoProcessor(const DXVA2_VideoDesc Dxva2Desc) {
     IF_FAILED_THROW(pDXVAHD->GetVideoProcessorOutputFormats(caps.OutputFormatCount, pFormats));
 
     for (uiIndex = 0; uiIndex < caps.OutputFormatCount; uiIndex++) {
-
       if (pFormats[uiIndex] == D3DFMT_X8R8G8B8) {
         break;
       }
@@ -415,6 +414,12 @@ HRESULT CDxva2Renderer::InitVideoProcessor(const DXVA2_VideoDesc Dxva2Desc) {
     IF_FAILED_THROW(pVPCaps == NULL ? E_OUTOFMEMORY : S_OK);
 
     IF_FAILED_THROW(pDXVAHD->GetVideoProcessorCaps(caps.VideoProcessorCount, pVPCaps));
+
+    bool enable_framerate_conversion = true;
+    if (pVPCaps[0].ProcessorCaps & DXVAHD_PROCESSOR_CAPS_FRAME_RATE_CONVERSION) {
+      enable_framerate_conversion = true;
+    }
+
 
     IF_FAILED_THROW(pDXVAHD->CreateVideoProcessor(&pVPCaps[0].VPGuid, &m_pDXVAVP));
 
